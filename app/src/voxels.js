@@ -1,6 +1,9 @@
-document.addEventListener("DOMContentLoaded", main)
+import { initBuffers } from "./init-buffers.js";
+import { drawScene } from "./draw-scene.js";
 
-function main() {
+main();
+
+async function main() {
 	const canvas = document.querySelector("#glcanvas");
 	const gl = canvas.getContext("webgl2");
 	
@@ -8,25 +11,16 @@ function main() {
 		alert("Unable to initialize WebGL 2.0.");
 		return;
 	}
-	
-	const vertexShaderSource = `
-		attribute vec4 aVertexPosition;
-		uniform mat4 uModelViewMatrix;
-		uniform mat4 uProjectionMatrix;
-		void main() {
-			gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-		}
-	`;
-	const fragmentShaderSource = `
-		void main() {
-			gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-		}
-	`
+
+	const vertexShaderSource = await loadShaderFile("vertex.cg");
+	const fragmentShaderSource = await loadShaderFile("fragment.cg");
+
 	const shaderProgram = initShaderProgram(gl, vertexShaderSource, fragmentShaderSource);
 	const programInfo = {
 		program: shaderProgram,
 		attribLocations: {
-			vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition")
+			vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+			vertexColor: gl.getAttribLocation(shaderProgram, "aVertexColor")
 		},
 		uniformLocations: {
 			projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
@@ -36,6 +30,10 @@ function main() {
 	
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT);
+
+	const buffers = initBuffers(gl);
+
+	drawScene(gl, programInfo, buffers);
 }
 
 function initShaderProgram(gl, vertexShaderSource, fragmentShaderSource) {
@@ -73,4 +71,10 @@ function loadShader(gl, type, source) {
 	}
 	
 	return shader;
+}
+
+async function loadShaderFile(fileName) {
+	const response = await fetch("http://localhost:8000/src/shaders/" + fileName);
+	const data = await response.text();
+	return data;
 }
