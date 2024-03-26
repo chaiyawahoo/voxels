@@ -74,7 +74,7 @@ function loadShader(gl, type, source) {
 }
 
 async function loadShaderFile(fileName) {
-	const response = await fetch("http://localhost/src/shaders/" + fileName);
+	const response = await fetch("http://localhost:8000/src/shaders/" + fileName);
 	const data = await response.text();
 	return data;
 }
