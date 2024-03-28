@@ -1,9 +1,4 @@
 function drawScene(gl, programInfo, buffers, deltaTime) {
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clearDepth(1.0);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
-
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     const fieldOfView = (45 * Math.PI) / 180;
@@ -14,10 +9,10 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
 
     mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
 
-    const modelViewMatrix = mat4.create();
+    const transformationMatrix = mat4.create();
 
-    mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -5.0]);
-    mat4.rotate(modelViewMatrix, modelViewMatrix, deltaTime, [0.1, 1.0, 0.8]);
+    mat4.translate(transformationMatrix, transformationMatrix, [0.0, 0.0, -5.0]);
+    mat4.rotate(transformationMatrix, transformationMatrix, deltaTime, [0.1, 1.0, 0.8]);
 
     setPositionAttribute(gl, programInfo, buffers);
     setColorAttribute(gl, programInfo, buffers);
@@ -33,9 +28,9 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
         projectionMatrix
     );
     gl.uniformMatrix4fv(
-        programInfo.uniformLocations.modelViewMatrix,
+        programInfo.uniformLocations.transformationMatrix,
         false,
-        modelViewMatrix
+        transformationMatrix
     );
 
     {

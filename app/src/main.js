@@ -4,7 +4,6 @@ import { drawScene } from "./draw-scene.js";
 let deltaTime = 0;
 let rotation = 0.0;
 
-
 main();
 
 async function main() {
@@ -15,15 +14,10 @@ async function main() {
 		alert("Unable to initialize WebGL 2.0.");
 		return;
 	}
-	// const ext = gl.getExtension("ANGLE_instanced_arrays");
-	// if (ext === null) {
-	// 	alert("WebGL Instanced Arrays not supported.");
-	// }
 
-	const vertexShaderSource = await loadShaderFile("vertex.glsl");
-	const fragmentShaderSource = await loadShaderFile("fragment.glsl");
+	const shaderSources = await getShaderSources("voxel");
 
-	const shaderProgram = initShaderProgram(gl, vertexShaderSource, fragmentShaderSource);
+	const shaderProgram = initShaderProgram(gl, shaderSources.vertex, shaderSources.fragment);
 	const programInfo = {
 		program: shaderProgram,
 		attribLocations: {
@@ -33,12 +27,16 @@ async function main() {
 		},
 		uniformLocations: {
 			projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-			modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix")
+			transformationMatrix: gl.getUniformLocation(shaderProgram, "uTransformationMatrix")
 		}
 	};
 	
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
-	gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clearDepth(1.0);
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	const buffers = initBuffers(gl);
 
@@ -94,7 +92,16 @@ function loadShader(gl, type, source) {
 	return shader;
 }
 
-async function loadShaderFile(fileName) {
+async function getShaderSources(shaderName) {
+	const vertexShader = await loadFile(shaderName + ".vert.glsl");
+	const fragmentShader = await loadFile(shaderName + ".frag.glsl");
+	return {
+		vertex: vertexShader,
+		fragment: fragmentShader
+	}
+}
+
+async function loadFile(fileName) {
 	const response = await fetch("src/shaders/" + fileName);
 	const data = await response.text();
 	return data;
