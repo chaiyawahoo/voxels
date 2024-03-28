@@ -1,6 +1,10 @@
 import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
 
+let deltaTime = 0;
+let rotation = 0.0;
+
+
 main();
 
 async function main() {
@@ -11,16 +15,21 @@ async function main() {
 		alert("Unable to initialize WebGL 2.0.");
 		return;
 	}
+	// const ext = gl.getExtension("ANGLE_instanced_arrays");
+	// if (ext === null) {
+	// 	alert("WebGL Instanced Arrays not supported.");
+	// }
 
-	const vertexShaderSource = await loadShaderFile("vertex.cg");
-	const fragmentShaderSource = await loadShaderFile("fragment.cg");
+	const vertexShaderSource = await loadShaderFile("vertex.glsl");
+	const fragmentShaderSource = await loadShaderFile("fragment.glsl");
 
 	const shaderProgram = initShaderProgram(gl, vertexShaderSource, fragmentShaderSource);
 	const programInfo = {
 		program: shaderProgram,
 		attribLocations: {
 			vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
-			vertexColor: gl.getAttribLocation(shaderProgram, "aVertexColor")
+			vertexColor: gl.getAttribLocation(shaderProgram, "aVertexColor"),
+			faceMatrix: gl.getAttribLocation(shaderProgram, "aFaceMatrix")
 		},
 		uniformLocations: {
 			projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
@@ -33,7 +42,19 @@ async function main() {
 
 	const buffers = initBuffers(gl);
 
-	drawScene(gl, programInfo, buffers);
+	let then = 0;
+
+	function render(now) {
+		now *= 0.001; // seconds
+		deltaTime = now - then;
+		then = now;
+
+		drawScene(gl, programInfo, buffers, rotation);
+		rotation += deltaTime;
+
+		requestAnimationFrame(render)
+	}
+	requestAnimationFrame(render);
 }
 
 function initShaderProgram(gl, vertexShaderSource, fragmentShaderSource) {

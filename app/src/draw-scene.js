@@ -1,4 +1,4 @@
-function drawScene(gl, programInfo, buffers) {
+function drawScene(gl, programInfo, buffers, deltaTime) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
     gl.enable(gl.DEPTH_TEST);
@@ -16,10 +16,14 @@ function drawScene(gl, programInfo, buffers) {
 
     const modelViewMatrix = mat4.create();
 
-    mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -10.0]);
+    mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -5.0]);
+    mat4.rotate(modelViewMatrix, modelViewMatrix, deltaTime, [0.3, 0.7, 1.0]);
 
     setPositionAttribute(gl, programInfo, buffers);
     setColorAttribute(gl, programInfo, buffers);
+    setFaceAttribute(gl, programInfo, buffers);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index);
 
     gl.useProgram(programInfo.program);
 
@@ -35,14 +39,15 @@ function drawScene(gl, programInfo, buffers) {
     );
 
     {
-        const offset = 0;
         const vertexCount = 4;
-        gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
+        const type = gl.UNSIGNED_SHORT;
+        const offset = 0;
+        gl.drawElementsInstanced(gl.TRIANGLE_FAN, vertexCount, type, offset, 6);
     }
 }
 
 function setPositionAttribute(gl, programInfo, buffers) {
-    const numComponents = 2;
+    const numComponents = 3;
     const type = gl.FLOAT
     const normalize = false;
     const stride = 0;
@@ -58,6 +63,7 @@ function setPositionAttribute(gl, programInfo, buffers) {
         offset
     );
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+    gl.vertexAttribDivisor(programInfo.attribLocations.vertexPosition, 0) // update per vertex
 }
 
 function setColorAttribute(gl, programInfo, buffers) {
@@ -77,6 +83,30 @@ function setColorAttribute(gl, programInfo, buffers) {
         offset
     );
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
+    gl.vertexAttribDivisor(programInfo.attribLocations.vertexColor, 1); // update per instance
+}
+
+function setFaceAttribute(gl, programInfo, buffers) {
+    const numComponents = 4;
+    const type = gl.FLOAT
+    const normalize = false;
+    const stride = 4 * 16;
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.face);
+    for (let i = 0; i < 4; i++) {
+        const location = programInfo.attribLocations.faceMatrix + i;
+        const offset = i * 16;
+        gl.vertexAttribPointer(
+            location,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset
+        );
+        gl.enableVertexAttribArray(location);
+        gl.vertexAttribDivisor(location, 1);
+    }
 }
 
 export { drawScene };
