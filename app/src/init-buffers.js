@@ -1,13 +1,3 @@
-const quadPositions = [
-    -0.5, -0.5, 0, // bl
-    +0.5, -0.5, 0, // br
-    +0.5, +0.5, 0, // tr
-    -0.5, +0.5, 0  // tl
-];
-const quadIndices = [
-    0, 1, 2, 3
-];
-
 function initBuffers(gl) {
     const positionBuffer = initPositionBuffer(gl);
     const colorBuffer = initColorBuffer(gl);
@@ -23,7 +13,12 @@ function initBuffers(gl) {
 }
 
 function initPositionBuffer(gl) {
-    const positions = quadPositions;
+    const positions = [
+        -0.5, -0.5, 0, // bl
+        +0.5, -0.5, 0, // br
+        +0.5, +0.5, 0, // tr
+        -0.5, +0.5, 0  // tl
+    ];
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.DYNAMIC_DRAW);
@@ -50,7 +45,7 @@ function initColorBuffer(gl) {
 }
 
 function initIndexBuffer(gl) {
-    const indices = quadIndices;
+    const indices = [0, 1, 2, 3];
     const indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.DYNAMIC_DRAW);
@@ -65,7 +60,6 @@ function initFaceBuffer(gl) {
     }
     const faceBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, faceBuffer);
-    console.log(faceMatrices);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(faceMatrices), gl.STATIC_DRAW);
 
     return faceBuffer;
