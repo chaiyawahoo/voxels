@@ -17,7 +17,7 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
     const modelViewMatrix = mat4.create();
 
     mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -5.0]);
-    mat4.rotate(modelViewMatrix, modelViewMatrix, deltaTime, [0.3, 0.7, 1.0]);
+    mat4.rotate(modelViewMatrix, modelViewMatrix, deltaTime, [0.1, 1.0, 0.8]);
 
     setPositionAttribute(gl, programInfo, buffers);
     setColorAttribute(gl, programInfo, buffers);

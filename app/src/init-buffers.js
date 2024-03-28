@@ -65,8 +65,9 @@ function initFaceBuffer(gl) {
     }
     const faceBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, faceBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(faceMatrices), gl.STATIC_DRAW);
     console.log(faceMatrices);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(faceMatrices), gl.STATIC_DRAW);
+
     return faceBuffer;
 }
 
@@ -97,7 +98,7 @@ function getFaceTransformation(face) {
             mat4.rotate(mat, mat, Math.PI * 1.5, [0, 1, 0]); 
             break;
     }
-    return mat;
+    return mat.map((n) => Math.round(n*2)/2); // can be rounded, as it will always be -1, -0.5, 0, +0.5, or +1
 }
 
 export { initBuffers };
