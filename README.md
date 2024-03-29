@@ -1,5 +1,6 @@
 # voxels
 Todo List:
+- Lighting
 - Render multiple voxels
 - Render chunk of voxels
 - Skip touching faces
