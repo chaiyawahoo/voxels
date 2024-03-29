@@ -1,4 +1,4 @@
-function drawScene(gl, programInfo, buffers, deltaTime) {
+function drawScene(gl, programInfo, buffers, texture, seconds) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     const fieldOfView = (45 * Math.PI) / 180;
@@ -12,10 +12,11 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
     const transformationMatrix = mat4.create();
 
     mat4.translate(transformationMatrix, transformationMatrix, [0.0, 0.0, -5.0]);
-    mat4.rotate(transformationMatrix, transformationMatrix, deltaTime, [0.1, 1.0, 0.8]);
+    mat4.rotate(transformationMatrix, transformationMatrix, seconds, [0.1, 1.0, 0.8]);
 
     setPositionAttribute(gl, programInfo, buffers);
-    setColorAttribute(gl, programInfo, buffers);
+    // setColorAttribute(gl, programInfo, buffers);
+    setTexCoordAttribute(gl, programInfo, buffers);
     setFaceAttribute(gl, programInfo, buffers);
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index);
@@ -33,6 +34,10 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
         transformationMatrix
     );
 
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.uniform1i(programInfo.uniformLocations.sampler, 0);
+
     {
         const vertexCount = 4;
         const type = gl.UNSIGNED_SHORT;
@@ -43,7 +48,7 @@ function drawScene(gl, programInfo, buffers, deltaTime) {
 
 function setPositionAttribute(gl, programInfo, buffers) {
     const numComponents = 3;
-    const type = gl.FLOAT
+    const type = gl.FLOAT;
     const normalize = false;
     const stride = 0;
     const offset = 0;
@@ -63,7 +68,7 @@ function setPositionAttribute(gl, programInfo, buffers) {
 
 function setColorAttribute(gl, programInfo, buffers) {
     const numComponents = 4;
-    const type = gl.FLOAT
+    const type = gl.FLOAT;
     const normalize = false;
     const stride = 0;
     const offset = 0;
@@ -81,9 +86,29 @@ function setColorAttribute(gl, programInfo, buffers) {
     gl.vertexAttribDivisor(programInfo.attribLocations.vertexColor, 1); // update per instance
 }
 
+function setTexCoordAttribute(gl, programInfo, buffers) {
+    const numComponents = 2;
+    const type = gl.FLOAT;
+    const normalize = false;
+    const stride = 0;
+    const offset = 0;
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.texCoord);
+    gl.vertexAttribPointer(
+        programInfo.attribLocations.texCoord,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset
+    );
+    gl.enableVertexAttribArray(programInfo.attribLocations.texCoord);
+    gl.vertexAttribDivisor(programInfo.attribLocations.texCoord, 0); // update per vertex
+}
+
 function setFaceAttribute(gl, programInfo, buffers) {
     const numComponents = 4;
-    const type = gl.FLOAT
+    const type = gl.FLOAT;
     const normalize = false;
     const stride = 4 * 16;
 

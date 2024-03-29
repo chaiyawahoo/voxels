@@ -2,7 +2,7 @@ import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
 
 let deltaTime = 0;
-let rotation = 0.0;
+let timePassed = 0.0;
 
 main();
 
@@ -21,13 +21,15 @@ async function main() {
 	const programInfo = {
 		program: shaderProgram,
 		attribLocations: {
-			vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
-			vertexColor: gl.getAttribLocation(shaderProgram, "aVertexColor"),
-			faceMatrix: gl.getAttribLocation(shaderProgram, "aFaceMatrix")
+			vertexPosition: gl.getAttribLocation(shaderProgram, "position"),
+			// vertexColor: gl.getAttribLocation(shaderProgram, "color"),
+			texCoord: gl.getAttribLocation(shaderProgram, "texCoord"),
+			faceMatrix: gl.getAttribLocation(shaderProgram, "face")
 		},
 		uniformLocations: {
-			projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-			transformationMatrix: gl.getUniformLocation(shaderProgram, "uTransformationMatrix")
+			projectionMatrix: gl.getUniformLocation(shaderProgram, "projection"),
+			transformationMatrix: gl.getUniformLocation(shaderProgram, "transformation"),
+			sampler: gl.getUniformLocation(shaderProgram, "sampler")
 		}
 	};
 	
@@ -40,6 +42,9 @@ async function main() {
 
 	const buffers = initBuffers(gl);
 
+	const texture = loadTexture(gl, "dirt.png");
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
 	let then = 0;
 
 	function render(now) {
@@ -47,8 +52,8 @@ async function main() {
 		deltaTime = now - then;
 		then = now;
 
-		drawScene(gl, programInfo, buffers, rotation);
-		rotation += deltaTime;
+		drawScene(gl, programInfo, buffers, texture, timePassed);
+		timePassed += deltaTime;
 
 		requestAnimationFrame(render)
 	}
@@ -93,16 +98,74 @@ function loadShader(gl, type, source) {
 }
 
 async function getShaderSources(shaderName) {
-	const vertexShader = await loadFile(shaderName + ".vert.glsl");
-	const fragmentShader = await loadFile(shaderName + ".frag.glsl");
+	const vertexShader = await getShaderSource(shaderName + ".vert.glsl");
+	const fragmentShader = await getShaderSource(shaderName + ".frag.glsl");
 	return {
 		vertex: vertexShader,
 		fragment: fragmentShader
 	}
 }
 
-async function loadFile(fileName) {
+async function getShaderSource(fileName) {
 	const response = await fetch("src/shaders/" + fileName);
 	const data = await response.text();
 	return data;
+}
+
+function loadTexture(gl, url) {
+	const texture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+
+	const level = 0;
+	const internalFormat = gl.RGBA;
+	const width = 1;
+	const height = 1;
+	const border = 0;
+	const srcFormat = gl.RGBA;
+	const srcType = gl.UNSIGNED_BYTE;
+	const pixel = new Uint8Array([0, 0, 255, 255]); // blue
+	gl.texImage2D(
+		gl.TEXTURE_2D,
+		level,
+		internalFormat,
+		width,
+		height,
+		border,
+		srcFormat,
+		srcType,
+		pixel
+	);
+
+	const image = new Image();
+	image.onload = () => {
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texImage2D(
+			gl.TEXTURE_2D,
+			level,
+			internalFormat,
+			srcFormat,
+			srcType,
+			image
+		);
+
+		if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+			gl.generateMipmap(gl.TEXTURE_2D);
+		} else {
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+		}
+		gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST); // disable bi-linear filtering: sharpen pixels
+	};
+	loadImage(image, url);
+
+	return texture;
+}
+
+async function loadImage(image, url) {
+	image.src = "images/" + url;
+}
+
+function isPowerOf2(value) {
+	return (value & (value - 1)) === 0;
 }

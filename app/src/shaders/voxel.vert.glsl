@@ -1,13 +1,17 @@
-attribute vec4 aVertexPosition;
-attribute vec4 aVertexColor;
-attribute mat4 aFaceMatrix;
+# version 300 es
+in vec4 position;
+// in vec4 color;
+in vec2 texCoord;
+in mat4 face;
 
-uniform mat4 uTransformationMatrix;
-uniform mat4 uProjectionMatrix;
+uniform mat4 transformation;
+uniform mat4 projection;
 
-varying lowp vec4 vColor;
+// out lowp vec4 f_color;
+out highp vec2 f_texCoord;
 
 void main() {
-	gl_Position = uProjectionMatrix * uTransformationMatrix * aFaceMatrix * aVertexPosition;
-	vColor = aVertexColor;
+	gl_Position = projection * transformation * face * position;
+	// f_color = color;
+	f_texCoord = texCoord;
 }
