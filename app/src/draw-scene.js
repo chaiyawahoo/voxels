@@ -37,12 +37,7 @@ function drawScene(gl, programInfo, buffers, texture, seconds) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.uniform1i(programInfo.uniformLocations.sampler, 0);
 
-    {
-        const vertexCount = 4;
-        const type = gl.UNSIGNED_SHORT;
-        const offset = 0;
-        gl.drawElementsInstanced(gl.TRIANGLE_FAN, vertexCount, type, offset, 6);
-    }
+    gl.drawElementsInstanced(gl.TRIANGLE_FAN, 4, gl.UNSIGNED_SHORT, 0, 6);
 }
 
 function setPositionAttribute(gl, programInfo, buffers) {
