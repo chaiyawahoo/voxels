@@ -22,9 +22,8 @@ async function main() {
 		program: shaderProgram,
 		attribLocations: {
 			vertexPosition: gl.getAttribLocation(shaderProgram, "position"),
-			// vertexColor: gl.getAttribLocation(shaderProgram, "color"),
-			texCoord: gl.getAttribLocation(shaderProgram, "texCoord"),
-			faceMatrix: gl.getAttribLocation(shaderProgram, "face")
+			vertexColor: gl.getAttribLocation(shaderProgram, "color"),
+			texCoord: gl.getAttribLocation(shaderProgram, "texCoord")
 		},
 		uniformLocations: {
 			projectionMatrix: gl.getUniformLocation(shaderProgram, "projection"),
@@ -36,6 +35,7 @@ async function main() {
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
     gl.enable(gl.DEPTH_TEST);
+	gl.enable(gl.CULL_FACE)
     gl.depthFunc(gl.LEQUAL);
 
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -109,6 +109,7 @@ async function getShaderSources(shaderName) {
 async function getShaderSource(fileName) {
 	const response = await fetch("src/shaders/" + fileName);
 	const data = await response.text();
+	console.log(data);
 	return data;
 }
 
