@@ -1,13 +1,13 @@
 function initBuffers(gl) {
     const positionBuffer = initPositionBuffer(gl);
-    const colorBuffer = initColorBuffer(gl);
-    const texCoordBuffer = initTexCoordBuffer(gl);
+    //const colorBuffer = initColorBuffer(gl);
+    //const texCoordBuffer = initTexCoordBuffer(gl);
     const indexBuffer = initIndexBuffer(gl);
 
     return {
         position: positionBuffer,
-        color: colorBuffer,
-        texCoord: texCoordBuffer,
+        //color: colorBuffer,
+        //texCoord: texCoordBuffer,
         index: indexBuffer
     };
 }
@@ -26,24 +26,24 @@ function initPositionBuffer(gl) {
     return positionBuffer;
 }
 
-function initColorBuffer(gl) {
+//function initColorBuffer(gl) {
 
-    const colors = [
-        // 1.0, 0.0, 0.0, 1.0, // front: red
-        // 0.0, 1.0, 0.0, 1.0, // right: green
-        // 0.0, 0.0, 1.0, 1.0, // back: blue
-        // 1.0, 1.0, 0.0, 1.0, // left: yellow
-        // 1.0, 0.0, 1.0, 1.0, // top: magenta
-        // 0.0, 1.0, 1.0, 1.0, // bottom: cyan
-        1.0, 1.0, 1.0, 1.0 // white
-    ];
+//    const colors = [
+//        // 1.0, 0.0, 0.0, 1.0, // front: red
+//        // 0.0, 1.0, 0.0, 1.0, // right: green
+//        // 0.0, 0.0, 1.0, 1.0, // back: blue
+//        // 1.0, 1.0, 0.0, 1.0, // left: yellow
+//        // 1.0, 0.0, 1.0, 1.0, // top: magenta
+//        // 0.0, 1.0, 1.0, 1.0, // bottom: cyan
+//        1.0, 1.0, 1.0, 1.0 // white
+//    ];
 
-    const colorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+//    const colorBuffer = gl.createBuffer();
+//    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+//    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
-    return colorBuffer;
-}
+//    return colorBuffer;
+//}
 
 function initIndexBuffer(gl) {
     const indices = [0, 1, 2, 3];
@@ -54,15 +54,15 @@ function initIndexBuffer(gl) {
     return indexBuffer;
 }
 
-function initTexCoordBuffer(gl) {
-    const texCoords = [
-        0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0
-    ];
-    const texCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords), gl.STATIC_DRAW);
+//function initTexCoordBuffer(gl) {
+//    const texCoords = [
+//        0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0
+//    ];
+//    const texCoordBuffer = gl.createBuffer();
+//    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+//    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords), gl.STATIC_DRAW);
 
-    return texCoordBuffer;
-}
+//    return texCoordBuffer;
+//}
 
 export { initBuffers };

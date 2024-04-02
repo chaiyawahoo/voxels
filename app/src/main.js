@@ -2,7 +2,6 @@ import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
 
 let deltaTime = 0;
-let timePassed = 0.0;
 
 main();
 
@@ -22,8 +21,8 @@ async function main() {
 		program: shaderProgram,
 		attribLocations: {
 			vertexPosition: gl.getAttribLocation(shaderProgram, "position"),
-			vertexColor: gl.getAttribLocation(shaderProgram, "color"),
-			texCoord: gl.getAttribLocation(shaderProgram, "texCoord")
+			//vertexColor: gl.getAttribLocation(shaderProgram, "color"),
+			//texCoord: gl.getAttribLocation(shaderProgram, "texCoord")
 		},
 		uniformLocations: {
 			projectionMatrix: gl.getUniformLocation(shaderProgram, "projection"),
@@ -52,8 +51,7 @@ async function main() {
 		deltaTime = now - then;
 		then = now;
 
-		drawScene(gl, programInfo, buffers, texture, timePassed);
-		timePassed += deltaTime;
+		drawScene(gl, programInfo, buffers, texture, now);
 
 		requestAnimationFrame(render)
 	}
