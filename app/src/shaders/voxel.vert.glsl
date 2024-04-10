@@ -31,7 +31,7 @@ void main() {
 	f_lighting = ambientLight + (directionalColor * directional);
 }
 
-mat4 getFaceMatrix2() {
+mat4 getFaceMatrixOld() {
 	mat4 mat;
 	mat[3][3] = 1.0;
 	int axis = 1 - ((gl_InstanceID % 6) / 4); // avoids if statements: [0-3] = 1; [4-5] = 0
