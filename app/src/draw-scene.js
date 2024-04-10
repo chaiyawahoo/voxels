@@ -11,12 +11,11 @@ function drawScene(gl, programInfo, buffers, texture, seconds) {
 
     const transformationMatrix = mat4.create();
 
-    mat4.translate(transformationMatrix, transformationMatrix, [0.0, 0.0, -5.0]);
+    mat4.translate(transformationMatrix, transformationMatrix, [0.0, 0.0, -10.0]);
     mat4.rotate(transformationMatrix, transformationMatrix, seconds, [0.7, 1.0, 0.5]);
 
     setPositionAttribute(gl, programInfo, buffers);
     //setColorAttribute(gl, programInfo, buffers);
-    //setTexCoordAttribute(gl, programInfo, buffers);
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index);
 
@@ -78,26 +77,6 @@ function setPositionAttribute(gl, programInfo, buffers) {
 //    );
 //    gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
 //    gl.vertexAttribDivisor(programInfo.attribLocations.vertexColor, 1); // update per instance
-//}
-
-//function setTexCoordAttribute(gl, programInfo, buffers) {
-//    const numComponents = 2;
-//    const type = gl.FLOAT;
-//    const normalize = false;
-//    const stride = 0;
-//    const offset = 0;
-
-//    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.texCoord);
-//    gl.vertexAttribPointer(
-//        programInfo.attribLocations.texCoord,
-//        numComponents,
-//        type,
-//        normalize,
-//        stride,
-//        offset
-//    );
-//    gl.enableVertexAttribArray(programInfo.attribLocations.texCoord);
-//    gl.vertexAttribDivisor(programInfo.attribLocations.texCoord, 0); // update per vertex
 //}
 
 export { drawScene };

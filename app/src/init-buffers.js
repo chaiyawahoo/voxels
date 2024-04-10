@@ -7,7 +7,6 @@ function initBuffers(gl) {
     return {
         position: positionBuffer,
         //color: colorBuffer,
-        //texCoord: texCoordBuffer,
         index: indexBuffer
     };
 }
@@ -53,16 +52,5 @@ function initIndexBuffer(gl) {
 
     return indexBuffer;
 }
-
-//function initTexCoordBuffer(gl) {
-//    const texCoords = [
-//        0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0
-//    ];
-//    const texCoordBuffer = gl.createBuffer();
-//    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-//    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords), gl.STATIC_DRAW);
-
-//    return texCoordBuffer;
-//}
 
 export { initBuffers };

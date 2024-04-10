@@ -131,3 +131,6 @@ dist
 
 # Visual Studio
 .vs
+
+# Codealike
+codealike.json

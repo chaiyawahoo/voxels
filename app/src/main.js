@@ -22,7 +22,6 @@ async function main() {
 		attribLocations: {
 			vertexPosition: gl.getAttribLocation(shaderProgram, "position"),
 			//vertexColor: gl.getAttribLocation(shaderProgram, "color"),
-			//texCoord: gl.getAttribLocation(shaderProgram, "texCoord")
 		},
 		uniformLocations: {
 			projectionMatrix: gl.getUniformLocation(shaderProgram, "projection"),
